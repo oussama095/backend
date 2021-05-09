@@ -1,23 +1,20 @@
 package com.doctor.backend.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "patient")
-public class Patient {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Patient extends AbstractEntity {
 
-    private String fistName;
+    private String firstName;
 
     private String lastName;
 
@@ -25,13 +22,15 @@ public class Patient {
 
     private String email;
 
-    private String address;
-
-    private String createdAt;
-
-    private String lastUpdate;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     private String note;
 
+    private String birthday;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
 
 }

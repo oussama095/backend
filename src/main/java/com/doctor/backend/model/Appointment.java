@@ -1,28 +1,27 @@
 package com.doctor.backend.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "appointment")
-public class Appointment {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Appointment extends AbstractEntity {
 
-    private Date name;
+    private String date;
 
+    private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "patient_id")
-    private Patient patientId;
+    private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transcription_id")
-    private Transcription transcriptionId;
+
 }
