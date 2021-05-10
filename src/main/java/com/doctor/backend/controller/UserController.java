@@ -1,11 +1,12 @@
 package com.doctor.backend.controller;
 
-import com.doctor.backend.model.user.User;
+import com.doctor.backend.dto.UserDto;
 import com.doctor.backend.repository.user.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/user")
@@ -18,36 +19,37 @@ public class UserController {
     }
 
     @GetMapping("/Users")
-    public List<User> all() {
-        return (List<User>) repository.findAll();
+    public List<UserDto> all() {
+        List<UserDto> users = new ArrayList<>();
+
+
+        repository.findAll().forEach(user -> users.add(UserDto.fromEntity(user)));
+        return users;
     }
 
     @PostMapping("/Users")
-    public User newUser(@RequestBody User newUser) {
-        return repository.save(newUser);
+    public UserDto newUser(@RequestBody UserDto newUser) {
+        return UserDto.fromEntity(repository.save(UserDto.toEntity(newUser)));
     }
 
     // Single item
 
     @GetMapping("/Users/{id}")
-    public Optional<User> one(@PathVariable Long id) {
+    public UserDto one(@PathVariable Long id) {
 
-        return repository.findById(id);
+        return UserDto.fromEntity(repository.findById(id).orElseGet(() -> UserDto.toEntity(new UserDto())));
     }
 
     @PutMapping("/Users/{id}")
-    public User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
+    public UserDto replaceUser(@RequestBody UserDto newUser, @PathVariable Long id) {
 
         return repository.findById(id)
                 .map(user -> {
                     user.setEmail(newUser.getEmail());
                     user.setRole(newUser.getRole());
-                    return repository.save(user);
+                    return UserDto.fromEntity(repository.save(user));
                 })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return repository.save(newUser);
-                });
+                .orElseGet(() -> UserDto.fromEntity(repository.save(UserDto.toEntity(newUser))));
     }
 
     @DeleteMapping("/Users/{id}")
