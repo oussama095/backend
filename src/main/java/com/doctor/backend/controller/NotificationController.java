@@ -34,13 +34,10 @@ public class NotificationController {
     }
 
     @PutMapping("/notification/{id}")
-    public ResponseEntity<NotificationDto> setReadNotification(
-            @PathVariable(value = "id") Long id)
+    public ResponseEntity<NotificationDto> setReadNotification(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
-
         var notificationDto = NotificationDto.fromEntity(notificationRepository
                 .findById(id).orElseThrow(() -> new ResourceNotFoundException("notification not found")));
-
         notificationDto.setIsRead(true);
         notificationRepository.save(NotificationDto.toEntity(notificationDto));
         return ResponseEntity.ok(notificationDto);

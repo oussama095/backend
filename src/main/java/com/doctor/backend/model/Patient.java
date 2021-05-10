@@ -3,10 +3,7 @@ package com.doctor.backend.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +14,7 @@ public class Patient {
     @GeneratedValue
     private Long id;
 
-    private String fistName;
+    private String firstName;
 
     private String lastName;
 
@@ -25,7 +22,9 @@ public class Patient {
 
     private String email;
 
-    private String address;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     private String createdAt;
 
@@ -33,5 +32,15 @@ public class Patient {
 
     private String note;
 
+    private String birthday;
 
+    public Patient(Long id, String firstName, String lastName, String phoneNumber, String email, Address address, String birthday) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.birthday = birthday;
+    }
 }
