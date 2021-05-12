@@ -33,4 +33,7 @@ public class Patient extends AbstractEntity {
     @OneToMany(mappedBy = "patient")
     private List<Appointment> appointments;
 
+    @OneToMany(mappedBy = "patient")
+    private List<Notification> notifications;
+
 }

@@ -1,8 +1,8 @@
 package com.doctor.backend.utils;
 
-import com.doctor.backend.dto.NotificationDto;
 import com.doctor.backend.model.Address;
 import com.doctor.backend.model.Appointment;
+import com.doctor.backend.model.Notification;
 import com.doctor.backend.model.Patient;
 import com.doctor.backend.repository.AppointmentRepository;
 import com.doctor.backend.repository.NotificationRepository;
@@ -27,9 +27,7 @@ public class LoadDatabase {
         return args -> {
             this.createPatients(patientRepository);
             this.createAppointment(appointmentRepository, patientRepository);
-
-//            this.initNotifications(notificationRepository);
-            //this.initAppointment();
+            this.initNotifications(notificationRepository, patientRepository);
         };
     }
 
@@ -70,12 +68,18 @@ public class LoadDatabase {
         }
     }
 
-    void initNotifications(NotificationRepository repository) {
-        for (var i = 1; i < this.maxNumber; i++) {
-            var notification = new NotificationDto(
-                    "Notification " + i,
-                    "This is a notification about something " + i);
-            repository.save(NotificationDto.toEntity(notification));
+    void initNotifications(NotificationRepository repository, PatientRepository patientRepository) {
+        var patients = patientRepository.findAll();
+
+        for (var i = 0; i < this.maxNumber; i++) {
+            for (var j = 1; j < 4; j++) {
+                var notification = new Notification();
+                notification.setPatient(patients.get(i));
+                notification.setTitle("Notification " + j);
+                notification.setMessage("This is a notification about something " + j);
+                notification.setIsRead(false);
+                repository.save(notification);
+            }
         }
     }
 }
