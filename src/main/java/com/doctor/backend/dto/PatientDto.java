@@ -10,8 +10,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 
-import java.util.List;
-
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
@@ -20,6 +18,7 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PatientDto {
+
     private Long id;
 
     private String firstName;
@@ -34,16 +33,6 @@ public class PatientDto {
 
     private String birthday;
 
-    private List<AppointmentDto> appointments;
-
-    public PatientDto(String firstName, String lastName, String phoneNumber, String email, AddressDto address, String birthday) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.address = address;
-        this.birthday = birthday;
-    }
 
     public static Patient toEntity(PatientDto patientDto) {
         if (null == patientDto)

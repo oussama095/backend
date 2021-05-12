@@ -1,17 +1,18 @@
 package com.doctor.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Address")
+@Table(name = "address")
 public class Address extends AbstractEntity {
 
     private String street1;

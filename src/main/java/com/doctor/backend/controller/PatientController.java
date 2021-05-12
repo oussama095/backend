@@ -3,7 +3,7 @@ package com.doctor.backend.controller;
 import com.doctor.backend.dto.AddressDto;
 import com.doctor.backend.dto.PatientDto;
 import com.doctor.backend.exception.ResourceNotFoundException;
-import com.doctor.backend.repository.user.PatientRepository;
+import com.doctor.backend.repository.PatientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

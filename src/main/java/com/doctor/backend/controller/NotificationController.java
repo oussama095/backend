@@ -2,7 +2,7 @@ package com.doctor.backend.controller;
 
 import com.doctor.backend.dto.NotificationDto;
 import com.doctor.backend.exception.ResourceNotFoundException;
-import com.doctor.backend.repository.user.NotificationRepository;
+import com.doctor.backend.repository.NotificationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

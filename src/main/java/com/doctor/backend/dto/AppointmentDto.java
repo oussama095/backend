@@ -21,23 +21,11 @@ public class AppointmentDto {
 
     private Long id;
 
+    private String date;
+
     private String title;
 
     private String description;
-
-    private PatientDto patient;
-
-    public AppointmentDto(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public AppointmentDto(String title, String description, PatientDto patient) {
-
-        this.title = title;
-        this.description = description;
-        this.patient = patient;
-    }
 
     public static Appointment toEntity(AppointmentDto appointmentDto) {
         if (null == appointmentDto)

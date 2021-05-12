@@ -1,73 +1,77 @@
 package com.doctor.backend.utils;
 
-import com.doctor.backend.dto.AddressDto;
-import com.doctor.backend.dto.AppointmentDto;
 import com.doctor.backend.dto.NotificationDto;
-import com.doctor.backend.dto.PatientDto;
-import com.doctor.backend.repository.user.AppointmentRepository;
-import com.doctor.backend.repository.user.NotificationRepository;
-import com.doctor.backend.repository.user.PatientRepository;
+import com.doctor.backend.model.Address;
+import com.doctor.backend.model.Appointment;
+import com.doctor.backend.model.Patient;
+import com.doctor.backend.repository.AppointmentRepository;
+import com.doctor.backend.repository.NotificationRepository;
+import com.doctor.backend.repository.PatientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 public class LoadDatabase {
-    //    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
-    List<PatientDto> patients = new ArrayList<>();
-    List<AppointmentDto> appointments = new ArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
+
+
     int maxNumber = 5;
 
     @Bean
     CommandLineRunner initDatabase(AppointmentRepository appointmentRepository,
                                    NotificationRepository notificationRepository,
                                    PatientRepository patientRepository) {
-
-
         return args -> {
-            this.initNotifications(notificationRepository);
-            this.createPatients();
-            this.createAppointment();
+            this.createPatients(patientRepository);
+            this.createAppointment(appointmentRepository, patientRepository);
 
-            this.initPatient(patientRepository);
-            this.initAppointment(appointmentRepository);
+//            this.initNotifications(notificationRepository);
+            //this.initAppointment();
         };
     }
 
-    void createAppointment() {
-        for (int i = 1; i < this.maxNumber; i++) {
-            var appointment = new AppointmentDto("Title " + i, "description " + i).setPatient(this.patients.get(0));
-            this.appointments.add(appointment);
+    void createAppointment(AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+        var patients = patientRepository.findAll();
+        for (var i = 0; i < this.maxNumber; i++) {
+            var appointment = new Appointment();
+            appointment.setTitle("Title " + i);
+            appointment.setDescription("description " + i);
+            appointment.setPatient(patients.get(i));
+            appointmentRepository.save(appointment);
         }
+
     }
 
-    void createPatients() {
-        var address = new AddressDto("sechzhenerstr", "20", "Passau", 94032, "Germany");
-        var patient = new PatientDto("Oussama", "sakkat", "+216 52 522 294",
-                "sakkat@mail.com", address, "1995-07-30T22:00:00.000Z");
-        this.patients.add(patient);
-        for (int i = 1; i < this.maxNumber; i++) {
+    void createPatients(PatientRepository patientRepository) {
+        var address = new Address("sechzhenerstr", "20", "Passau", 94032, "Germany");
+        var patient = new Patient();
+        patient.setFirstName("Oussama");
+        patient.setLastName("Sakkat");
+        patient.setPhoneNumber("+216 52 522 294");
+        patient.setEmail("sakkat@mail.com");
+        patient.setAddress(address);
+        patient.setBirthday("1995-07-30T22:00:00.000Z");
+        patientRepository.save(patient);
+
+        for (var i = 1; i < this.maxNumber; i++) {
+            patient = new Patient();
+            address = new Address("sechzhenerstr", "20", "Passau", 94032, "Germany");
             address.setStreet2(String.valueOf(Integer.parseInt(address.getStreet2()) + i));
-            patient = new PatientDto("Patient " + i, "LastName " + i, "+216 52 522 294",
-                    "patient" + i + "@mail.com", address, "199" + i + "-07-30T22:00:00.000Z");
-            this.patients.add(patient);
+            patient.setFirstName("Patient " + i);
+            patient.setLastName("LastName " + i);
+            patient.setPhoneNumber("+216 52 522 294");
+            patient.setEmail("patient" + i + "@mail.com");
+            patient.setAddress(address);
+            patient.setBirthday("199" + i + "-07-30T22:00:00.000Z");
+            patientRepository.save(patient);
         }
-    }
-
-    void initPatient(PatientRepository repository) {
-        this.patients.forEach(patientDto -> repository.save(PatientDto.toEntity(patientDto)));
-    }
-
-    void initAppointment(AppointmentRepository repository) {
-        this.appointments.forEach(appointmentDto -> repository.save(AppointmentDto.toEntity(appointmentDto)));
     }
 
     void initNotifications(NotificationRepository repository) {
-        for (int i = 1; i < this.maxNumber; i++) {
+        for (var i = 1; i < this.maxNumber; i++) {
             var notification = new NotificationDto(
                     "Notification " + i,
                     "This is a notification about something " + i);

@@ -1,4 +1,4 @@
-package com.doctor.backend.repository.user;
+package com.doctor.backend.repository;
 
 import com.doctor.backend.model.Notification;
 import org.springframework.data.repository.CrudRepository;
