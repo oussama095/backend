@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,7 +16,9 @@ import javax.persistence.*;
 @Table(name = "appointment")
 public class Appointment extends AbstractEntity {
 
-    private String date;
+    private LocalDateTime start;
+
+    private LocalDateTime end;
 
     private String title;
 

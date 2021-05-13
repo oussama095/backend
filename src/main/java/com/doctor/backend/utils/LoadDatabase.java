@@ -7,15 +7,16 @@ import com.doctor.backend.model.Patient;
 import com.doctor.backend.repository.AppointmentRepository;
 import com.doctor.backend.repository.NotificationRepository;
 import com.doctor.backend.repository.PatientRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 @Configuration
 public class LoadDatabase {
-    private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
+    // private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
 
     int maxNumber = 5;
@@ -32,13 +33,20 @@ public class LoadDatabase {
     }
 
     void createAppointment(AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
-        var patients = patientRepository.findAll();
+        var patients = new ArrayList<Patient>();
+        patientRepository.findAll().forEach(patients::add);
+        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        var date = LocalDateTime.now();
         for (var i = 0; i < this.maxNumber; i++) {
-            var appointment = new Appointment();
-            appointment.setTitle("Title " + i);
-            appointment.setDescription("description " + i);
-            appointment.setPatient(patients.get(i));
-            appointmentRepository.save(appointment);
+            for (var j = 0; j < this.maxNumber; j++) {
+                var appointment = new Appointment();
+                appointment.setTitle("Title " + j);
+                appointment.setDescription("description " + j);
+                appointment.setStart(date.plusDays(j));
+                appointment.setEnd(date.plusDays(j).plusHours(1));
+                appointment.setPatient(patients.get(i));
+                appointmentRepository.save(appointment);
+            }
         }
 
     }
@@ -69,7 +77,8 @@ public class LoadDatabase {
     }
 
     void initNotifications(NotificationRepository repository, PatientRepository patientRepository) {
-        var patients = patientRepository.findAll();
+        var patients = new ArrayList<Patient>();
+        patientRepository.findAll().forEach(patients::add);
 
         for (var i = 0; i < this.maxNumber; i++) {
             for (var j = 1; j < 4; j++) {

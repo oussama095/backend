@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
@@ -21,7 +24,11 @@ public class AppointmentDto {
 
     private Long id;
 
-    private String date;
+    @DateTimeFormat
+    private LocalDateTime start;
+
+    @DateTimeFormat
+    private LocalDateTime end;
 
     private String title;
 
