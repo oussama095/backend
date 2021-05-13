@@ -59,7 +59,8 @@ public class AppointmentServiceImp implements AppointmentService {
             var appointment = optionalAppointment.get();
             appointment.setTitle(updateAppointment.getTitle());
             appointment.setDescription(updateAppointment.getDescription());
-            appointment.setDate(updateAppointment.getDate());
+            appointment.setStart(updateAppointment.getStart());
+            appointment.setEnd(updateAppointment.getEnd());
             return AppointmentDto.fromEntity(this.repository.save(appointment));
         }
         return null;

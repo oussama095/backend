@@ -1,53 +1,45 @@
 package com.doctor.backend.controller;
 
-import com.doctor.backend.dto.AddressDto;
 import com.doctor.backend.dto.PatientDto;
-import com.doctor.backend.exception.ResourceNotFoundException;
-import com.doctor.backend.repository.PatientRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import com.doctor.backend.service.PatientService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api/patient")
 public class PatientController {
-    private final PatientRepository patientRepository;
-    Logger logger = LoggerFactory.getLogger(PatientController.class);
+    private final PatientService patientService;
 
-    public PatientController(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
-    @GetMapping("/patients")
+    @GetMapping("s")
     public List<PatientDto> all() {
-        List<PatientDto> patients = new ArrayList<>();
-        patientRepository.findAll().forEach(patient -> patients.add(PatientDto.fromEntity(patient)));
-        return patients;
+        var patientsDto = new ArrayList<PatientDto>();
+        patientService.getAllPatients().forEach(patient -> patientsDto.add(PatientDto.fromEntity(patient)));
+        return patientsDto;
     }
 
-    @GetMapping("/patient")
-    public ResponseEntity<PatientDto> patientById(@RequestParam Long id) throws ResourceNotFoundException {
-        return ResponseEntity.ok(PatientDto.fromEntity(patientRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("PatientNotFound")
-        )));
+    @GetMapping("")
+    public PatientDto patientById(@RequestParam Long patientId) {
+        return PatientDto.fromEntity(patientService.getPatientById(patientId));
     }
 
-    @PutMapping("patient/{id}")
-    public PatientDto updatePatient(@PathVariable(value = "id") Long id, @RequestBody PatientDto updatedPatient) throws ResourceNotFoundException {
+    @PostMapping("")
+    public PatientDto patientById(@RequestBody PatientDto newPatient) {
+        return PatientDto.fromEntity(patientService.addPatient(PatientDto.toEntity(newPatient)));
+    }
 
-        return PatientDto.fromEntity(patientRepository.findById(id).map(patient -> {
-            patient.setId(updatedPatient.getId());
-            patient.setFirstName(updatedPatient.getFirstName());
-            patient.setLastName(updatedPatient.getLastName());
-            patient.setPhoneNumber(updatedPatient.getPhoneNumber());
-            patient.setEmail(updatedPatient.getEmail());
-            patient.setBirthday(updatedPatient.getBirthday());
-            patient.setAddress(AddressDto.toEntity(updatedPatient.getAddress()));
-            return patientRepository.save(patient);
-        }).orElseThrow(() -> new ResourceNotFoundException("PatientNotFound")));
+    @PutMapping("")
+    public PatientDto updatePatient(@RequestBody PatientDto updatedPatient) {
+        return PatientDto.fromEntity(patientService.updatePatient(PatientDto.toEntity(updatedPatient)));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePatient(@PathVariable(value = "id") Long patientId) {
+        patientService.deletePatient(patientId);
     }
 }
