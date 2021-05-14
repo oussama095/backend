@@ -16,7 +16,7 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @GetMapping("s")
+    @GetMapping("all")
     public List<PatientDto> all() {
         var patientsDto = new ArrayList<PatientDto>();
         patientService.getAllPatients().forEach(patient -> patientsDto.add(PatientDto.fromEntity(patient)));

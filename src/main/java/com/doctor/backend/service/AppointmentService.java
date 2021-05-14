@@ -1,17 +1,24 @@
 package com.doctor.backend.service;
 
-import com.doctor.backend.dto.AppointmentDto;
 
+import com.doctor.backend.model.Appointment;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
 
-    List<AppointmentDto> getAll();
+    List<Appointment> getAll();
 
-    List<AppointmentDto>  getAppointmentsByPatient(Long patientId);
+    List<Appointment> getAppointmentsByPatient(Long patientId);
 
-    AppointmentDto addNewAppointment(AppointmentDto newAppointment, Long patientId);
+    Appointment addNewAppointment(Appointment newAppointment, Long patientId);
 
-    AppointmentDto updateAppointment(AppointmentDto appointment);
+    Appointment updateAppointment(Appointment appointment);
+
+    Appointment updateAppointmentDate(Long appointmentId, LocalDateTime start, LocalDateTime end);
+
+    void deleteAppointment(Long appointmentId);
+
 
 }

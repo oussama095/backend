@@ -3,13 +3,14 @@ package com.doctor.backend.controller;
 import com.doctor.backend.dto.AppointmentDto;
 import com.doctor.backend.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("/api/appointment")
 public class AppointmentController {
     private final AppointmentService appointmentService;
 
@@ -18,24 +19,55 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
+    @GetMapping("all")
+    public List<AppointmentDto> getAllAppointments() {
+        var appointmentsDto = new ArrayList<AppointmentDto>();
+        appointmentService.getAll().forEach(appointment -> appointmentsDto.add(AppointmentDto.fromEntity(appointment)));
+        return appointmentsDto;
+    }
+
+    @GetMapping("/{patientId}")
+    public List<AppointmentDto> getAppointmentsByPatient(@PathVariable Long patientId) {
+        var appointmentsDto = new ArrayList<AppointmentDto>();
+        appointmentService.getAppointmentsByPatient(patientId).forEach(appointment -> appointmentsDto.add(AppointmentDto.fromEntity(appointment)));
+        return appointmentsDto;
+    }
+
+    @GetMapping("/blocker")
+    public List<AppointmentDto> getAllAppointmentsBlocker(@RequestParam(required = false) Long patientId) {
+        var appointmentsDto = new ArrayList<AppointmentDto>();
+        appointmentService.getAll().forEach(appointment -> {
+            var blocker = new AppointmentDto();
+            blocker.setStart(appointment.getStart());
+            blocker.setEnd(appointment.getEnd());
+            blocker.setTitle("Appointment booked");
+            if (appointment.getPatient().getId().equals(patientId)) {
+                blocker.setTitle(appointment.getTitle());
+            }
+            appointmentsDto.add(blocker);
+        });
+        return appointmentsDto;
+    }
+
+    @PostMapping("/{patientId}")
+    public AppointmentDto addAppointment(@PathVariable Long patientId, @RequestBody AppointmentDto appointmentDto) {
+        return AppointmentDto.fromEntity(this.appointmentService.addNewAppointment(AppointmentDto.toEntity(appointmentDto), patientId));
+    }
+
     @PutMapping("")
-    public ResponseEntity<AppointmentDto> updateAppointment( @RequestBody AppointmentDto appointmentDto) {
-        return ResponseEntity.ok(this.appointmentService.updateAppointment(appointmentDto));
+    public AppointmentDto updateAppointment(@RequestBody AppointmentDto appointmentDto) {
+        return AppointmentDto.fromEntity(this.appointmentService.updateAppointment(AppointmentDto.toEntity(appointmentDto)));
 
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
-        return ResponseEntity.ok(this.appointmentService.getAll());
+    @PutMapping("/{appointmentId}")
+    public AppointmentDto updateAppointmentDate(@PathVariable Long appointmentId, @RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
+        return AppointmentDto.fromEntity(this.appointmentService.updateAppointmentDate(appointmentId, start, end));
+
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<AppointmentDto>> getAppointmentsByPatient(@PathVariable Long id) {
-        return ResponseEntity.ok(this.appointmentService.getAppointmentsByPatient(id));
-    }
-
-    @PostMapping("/{id}")
-    public ResponseEntity<AppointmentDto> addAppointment(@PathVariable Long id, @RequestBody AppointmentDto appointmentDto) {
-        return ResponseEntity.ok(this.appointmentService.addNewAppointment(appointmentDto, id));
+    @DeleteMapping("{appointmentId}")
+    public void deleteAppointment(@PathVariable Long appointmentId) {
+        appointmentService.deleteAppointment(appointmentId);
     }
 }
