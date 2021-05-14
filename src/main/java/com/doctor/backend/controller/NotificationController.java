@@ -3,13 +3,12 @@ package com.doctor.backend.controller;
 import com.doctor.backend.dto.NotificationDto;
 import com.doctor.backend.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/notification")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -20,22 +19,22 @@ public class NotificationController {
     }
 
     @GetMapping("")
-    public List<NotificationDto> all() {
-        return this.notificationService.getAllNotification();
+    public NotificationDto findNotificationById(@RequestParam Long id) {
+        return NotificationDto.fromEntity(this.notificationService.getNotificationById(id));
     }
 
-    @GetMapping("/notification")
-    public ResponseEntity<NotificationDto> findNotificationById(@RequestParam Long id) {
-        return ResponseEntity.ok(this.notificationService.getNotificationById(id));
+    @GetMapping("/{patientId}")
+    public List<NotificationDto> findNotificationByPatient(@PathVariable(value = "patientId") Long id) {
+        return NotificationDto.fromEntities(this.notificationService.getAllNotificationByPatient(id));
     }
 
-    @GetMapping("/notification/{patientId}")
-    public ResponseEntity<List<NotificationDto>> findNotificationByPatient(@PathVariable(value = "patientId") Long id) {
-        return ResponseEntity.ok(this.notificationService.getAllNotificationByPatient(id));
+    @PutMapping("{id}")
+    public Boolean setReadNotification(@PathVariable(value = "id") Long id) {
+        return this.notificationService.setNotificationAsRead(id);
     }
 
-    @PutMapping("/notification/{id}")
-    public ResponseEntity<Boolean> setReadNotification(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.ok(this.notificationService.setNotificationAsRead(id));
+    @DeleteMapping("/{id}")
+    public void deleteNotification(@PathVariable(value = "id") Long id) {
+        this.notificationService.removeNotification(id);
     }
 }

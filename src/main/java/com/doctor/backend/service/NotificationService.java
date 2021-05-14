@@ -1,22 +1,23 @@
 package com.doctor.backend.service;
 
-import com.doctor.backend.dto.NotificationDto;
+
+import com.doctor.backend.model.Notification;
 
 import java.util.List;
 
 public interface NotificationService {
-    List<NotificationDto> getAllNotification();
+    List<Notification> getAllNotification();
 
-    List<NotificationDto> getAllNotificationByPatient(Long patientId);
+    List<Notification> getAllNotificationByPatient(Long patientId);
 
-    NotificationDto getNotificationById(Long patientId);
+    Notification getNotificationById(Long patientId);
 
     Boolean setNotificationAsRead(Long notificationId);
 
-    NotificationDto addNotification(Long patientId);
+    void addNotification(Long patientId, Notification notification);
 
-    Boolean RemoveNotification(Long notificationId);
+    void removeNotification(Long notificationId);
 
-    NotificationDto updateNotification(Long notificationId);
+    Notification updateNotification(Notification updateNotification);
 
 }

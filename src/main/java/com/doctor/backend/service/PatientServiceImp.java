@@ -71,4 +71,9 @@ public class PatientServiceImp implements PatientService {
             patientRepository.deleteById(patientId);
         }
     }
+
+    @Override
+    public Patient save(Patient patient) {
+       return patientRepository.save(patient);
+    }
 }

@@ -1,8 +1,7 @@
 package com.doctor.backend.service;
 
-import com.doctor.backend.dto.NotificationDto;
+import com.doctor.backend.model.Notification;
 import com.doctor.backend.repository.NotificationRepository;
-import com.doctor.backend.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,36 +12,31 @@ import java.util.List;
 public class NotificationServiceImp implements NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
 
     @Autowired
-    public NotificationServiceImp(NotificationRepository notificationRepository, PatientRepository patientRepository) {
+    public NotificationServiceImp(NotificationRepository notificationRepository, PatientService patientService) {
         this.notificationRepository = notificationRepository;
-        this.patientRepository = patientRepository;
+        this.patientService = patientService;
     }
 
     @Override
-    public List<NotificationDto> getAllNotification() {
-        List<NotificationDto> notifications = new ArrayList<>();
-        this.notificationRepository.findAll().forEach(notification -> notifications.add(NotificationDto.fromEntity(notification)));
+    public List<Notification> getAllNotification() {
+        List<Notification> notifications = new ArrayList<>();
+        this.notificationRepository.findAll().forEach(notifications::add);
         return notifications;
     }
 
     @Override
-    public List<NotificationDto> getAllNotificationByPatient(Long patientId) {
-        var opt = this.patientRepository.findById(patientId);
-        if (opt.isPresent()) {
-            List<NotificationDto> notifications = new ArrayList<>();
-            opt.get().getNotifications().forEach(notification -> notifications.add(NotificationDto.fromEntity(notification)));
-            return notifications;
-        } else return new ArrayList<>();
+    public List<Notification> getAllNotificationByPatient(Long patientId) {
+        return patientService.getPatientById(patientId).getNotifications();
+
     }
 
     @Override
-    public NotificationDto getNotificationById(Long notificationId) {
-        var opt = this.notificationRepository.findById(notificationId);
-        if (opt.isPresent()) return NotificationDto.fromEntity(opt.get());
-        return null;
+    public Notification getNotificationById(Long notificationId) {
+        var notification = this.notificationRepository.findById(notificationId);
+        return notification.orElse(null);
     }
 
     @Override
@@ -58,17 +52,27 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     @Override
-    public NotificationDto addNotification(Long patientId) {
-        return null;
+    public void addNotification(Long patientId, Notification notification) {
+        var patient = patientService.getPatientById(patientId);
+        patient.getNotifications().add(notification);
+        patientService.save(patient);
+
     }
 
     @Override
-    public Boolean RemoveNotification(Long notificationId) {
-        return null;
+    public void removeNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
     }
 
     @Override
-    public NotificationDto updateNotification(Long notificationId) {
+    public Notification updateNotification(Notification updateNotification) {
+        var optionalNotification = notificationRepository.findById(updateNotification.getId());
+        if (optionalNotification.isPresent()) {
+            var notification = optionalNotification.get();
+            notification.setTitle(notification.getTitle());
+            notification.setMessage(notification.getMessage());
+            return notificationRepository.save(notification);
+        }
         return null;
     }
 }
