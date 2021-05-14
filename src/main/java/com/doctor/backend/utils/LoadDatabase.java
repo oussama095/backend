@@ -1,12 +1,7 @@
 package com.doctor.backend.utils;
 
-import com.doctor.backend.model.Address;
-import com.doctor.backend.model.Appointment;
-import com.doctor.backend.model.Notification;
-import com.doctor.backend.model.Patient;
-import com.doctor.backend.repository.AppointmentRepository;
-import com.doctor.backend.repository.NotificationRepository;
-import com.doctor.backend.repository.PatientRepository;
+import com.doctor.backend.model.*;
+import com.doctor.backend.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,18 +19,22 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(AppointmentRepository appointmentRepository,
                                    NotificationRepository notificationRepository,
-                                   PatientRepository patientRepository) {
+                                   PatientRepository patientRepository,
+                                   TranscriptionRepository transcriptionRepository,
+                                   MedicationRepository medicationRepository) {
         return args -> {
             this.createPatients(patientRepository);
             this.createAppointment(appointmentRepository, patientRepository);
             this.initNotifications(notificationRepository, patientRepository);
+            this.createTranscription(transcriptionRepository, patientRepository);
+            this.createMedication(transcriptionRepository, medicationRepository);
+
         };
     }
 
     void createAppointment(AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
         var patients = new ArrayList<Patient>();
         patientRepository.findAll().forEach(patients::add);
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         var date = LocalDateTime.now();
         for (var i = 0; i < this.maxNumber; i++) {
             for (var j = 0; j < this.maxNumber; j++) {
@@ -50,6 +49,41 @@ public class LoadDatabase {
         }
 
     }
+
+    void createTranscription(TranscriptionRepository transcriptionRepository, PatientRepository patientRepository) {
+        var patients = new ArrayList<Patient>();
+        patientRepository.findAll().forEach(patients::add);
+        for (var i = 0; i < this.maxNumber; i++) {
+            for (var j = 0; j < this.maxNumber; j++) {
+                var transcription = new Transcription();
+                transcription.setNote("note " + j);
+                transcription.setPatient(patients.get(i));
+                transcriptionRepository.save(transcription);
+            }
+        }
+    }
+
+    void createMedication(TranscriptionRepository transcriptionRepository, MedicationRepository medicationRepository) {
+        var transcriptions = new ArrayList<Transcription>();
+        transcriptionRepository.findAll().forEach(transcriptions::add);
+
+        for (var i = 0; i < this.maxNumber; i++) {
+            for (var j = 0; j < this.maxNumber; j++) {
+                var dose = new Dose();
+                dose.setQuantity(i + 1);
+                dose.setFullPeriod(i + 2 + "months");
+                dose.setPeriod(i + 1 + "Day");
+                var medication = new Medication();
+                medication.setName("Medication " + j);
+                medication.setRoute("Route " + j);
+                medication.setDrugForm("Drug Form " + j);
+                medication.setDose(dose);
+                medication.setTranscription(transcriptions.get(i));
+                medicationRepository.save(medication);
+            }
+        }
+    }
+
 
     void createPatients(PatientRepository patientRepository) {
         var address = new Address("sechzhenerstr", "20", "Passau", 94032, "Germany");

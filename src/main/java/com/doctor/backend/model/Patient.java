@@ -36,4 +36,7 @@ public class Patient extends AbstractEntity {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE)
     private List<Notification> notifications;
 
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE)
+    private List<Transcription> transcriptions;
+
 }

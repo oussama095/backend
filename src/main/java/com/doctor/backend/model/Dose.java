@@ -1,26 +1,22 @@
 package com.doctor.backend.model;
 
-import com.doctor.backend.utils.Period;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Entity;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Entity
 @NoArgsConstructor
-
-@Table(name = "dose")
-public class Dose {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Dose extends AbstractEntity {
 
     private Integer quantity;
 
-    private Period period;
+    private String period;
 
+    private String fullPeriod;
 
 }

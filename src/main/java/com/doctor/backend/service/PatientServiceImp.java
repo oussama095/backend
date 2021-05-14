@@ -1,6 +1,8 @@
 package com.doctor.backend.service;
 
+import com.doctor.backend.model.Medication;
 import com.doctor.backend.model.Patient;
+import com.doctor.backend.model.Transcription;
 import com.doctor.backend.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,14 +68,46 @@ public class PatientServiceImp implements PatientService {
 
         var optionalPatient = patientRepository.findById(patientId);
         if (optionalPatient.isPresent()) {
-            // TODO get all notification and delete them
-            // TODO get all appointments and delete them
             patientRepository.deleteById(patientId);
         }
     }
 
     @Override
     public Patient save(Patient patient) {
-       return patientRepository.save(patient);
+        return patientRepository.save(patient);
+    }
+
+    @Override
+    public List<Transcription> getTranscriptionByPatient(Long patientId) {
+        var patient = patientRepository.findById(patientId).orElse(null);
+        if (patient != null) {
+            return patient.getTranscriptions();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Medication> getMedicationByPatient(Long patientId) {
+        var patient = patientRepository.findById(patientId).orElse(null);
+        if (patient != null) {
+            var medications = new ArrayList<Medication>();
+            patient.getTranscriptions().forEach(transcription -> medications.addAll(transcription.getMedications()));
+            return medications;
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Transcription addTranscription(Long patientId, Transcription transcription) {
+        var patient = patientRepository.findById(patientId).orElse(null);
+        if (patient != null) {
+
+            patient.getTranscriptions().add(transcription);
+            return patientRepository.save(patient).getTranscriptions()
+                    .stream()
+                    .filter(t -> t.getMedications() == transcription.getMedications() && t.getNote().equals(transcription.getNote()))
+                    .findAny().orElse(null);
+        }
+        return null;
     }
 }
