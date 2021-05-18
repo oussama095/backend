@@ -21,6 +21,11 @@ public class MedicationController {
         this.medicationService = medicationService;
     }
 
+    @GetMapping("")
+    public MedicationDto getMedication(@RequestParam Long medicationId) {
+        return MedicationDto.fromEntity(medicationService.getMedicationById(medicationId));
+    }
+
     @GetMapping("{transcriptionId}")
     public List<MedicationDto> getMedicationFromTransaction(@PathVariable Long transcriptionId) {
         return MedicationDto.fromEntities(transcriptionService.getMedicationByTranscription(transcriptionId));

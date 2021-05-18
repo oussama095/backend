@@ -11,6 +11,8 @@ public interface TranscriptionService {
 
     Transcription updateTranscription(Transcription transcription);
 
+    Transcription getTranscription(Long transcriptionId);
+
     Medication addMedicationToTranscription(Long transcriptionId, Medication medication);
 
     List<Medication> getMedicationByTranscription(Long transcriptionId);

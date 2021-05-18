@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,12 @@ public class TranscriptionDto {
 
     private Long id;
 
+    private String name;
+
     private String note;
+
+    private Date createdAt;
+
 
     private List<MedicationDto> medications;
 

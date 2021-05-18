@@ -45,10 +45,11 @@ public class AppointmentServiceImp implements AppointmentService {
     }
 
     @Override
-    public Appointment updateAppointment(Appointment updateAppointment) {
-        var optionalAppointment = appointmentRepository.findById(updateAppointment.getId());
+    public Appointment updateAppointment(Long appointmentId, Appointment updateAppointment) {
+        var optionalAppointment = appointmentRepository.findById(appointmentId);
         if (optionalAppointment.isPresent()) {
             var appointment = optionalAppointment.get();
+            appointment.setId(appointmentId);
             appointment.setTitle(updateAppointment.getTitle());
             appointment.setDescription(updateAppointment.getDescription());
             appointment.setStart(updateAppointment.getStart());
@@ -68,6 +69,7 @@ public class AppointmentServiceImp implements AppointmentService {
         var optionalAppointment = appointmentRepository.findById(appointmentId);
         if (optionalAppointment.isPresent()) {
             var appointment = optionalAppointment.get();
+            appointment.setId(appointmentId);
             appointment.setStart(start);
             appointment.setEnd(end);
             return this.appointmentRepository.save(appointment);

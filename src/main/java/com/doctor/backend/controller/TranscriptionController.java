@@ -20,10 +20,16 @@ public class TranscriptionController {
         this.patientService = patientService;
     }
 
+    @GetMapping("")
+    public TranscriptionDto getTranscription(@RequestParam Long transcriptionId) {
+        return TranscriptionDto.fromEntity(transcriptionService.getTranscription(transcriptionId));
+    }
+
     @GetMapping("{patientId}")
     public List<TranscriptionDto> all(@PathVariable Long patientId) {
         return TranscriptionDto.fromEntities(patientService.getTranscriptionByPatient(patientId));
     }
+
 
     @PostMapping("{patientId}")
     public TranscriptionDto addTranscription(@PathVariable Long patientId, @RequestBody TranscriptionDto transcriptionDto) {

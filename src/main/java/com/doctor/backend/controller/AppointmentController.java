@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointment")
@@ -27,9 +28,17 @@ public class AppointmentController {
     }
 
     @GetMapping("/{patientId}")
-    public List<AppointmentDto> getAppointmentsByPatient(@PathVariable Long patientId) {
+    public List<AppointmentDto> getAppointmentsByPatient(@PathVariable Long patientId, @RequestParam Optional<Long> appointmentId) {
         var appointmentsDto = new ArrayList<AppointmentDto>();
-        appointmentService.getAppointmentsByPatient(patientId).forEach(appointment -> appointmentsDto.add(AppointmentDto.fromEntity(appointment)));
+        if (appointmentId.isPresent()) {
+            appointmentsDto.add(AppointmentDto.fromEntity(appointmentService.getAppointmentsByPatient(patientId)
+                    .stream()
+                    .filter(appointment -> appointment.getId().equals(appointmentId.get()))
+                    .findFirst().orElse(null)));
+        } else {
+            appointmentService.getAppointmentsByPatient(patientId).forEach(appointment -> appointmentsDto.add(AppointmentDto.fromEntity(appointment)));
+        }
+
         return appointmentsDto;
     }
 
@@ -54,15 +63,14 @@ public class AppointmentController {
         return AppointmentDto.fromEntity(this.appointmentService.addNewAppointment(AppointmentDto.toEntity(appointmentDto), patientId));
     }
 
-    @PutMapping("")
-    public AppointmentDto updateAppointment(@RequestBody AppointmentDto appointmentDto) {
-        return AppointmentDto.fromEntity(this.appointmentService.updateAppointment(AppointmentDto.toEntity(appointmentDto)));
-
-    }
-
     @PutMapping("/{appointmentId}")
-    public AppointmentDto updateAppointmentDate(@PathVariable Long appointmentId, @RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
-        return AppointmentDto.fromEntity(this.appointmentService.updateAppointmentDate(appointmentId, start, end));
+    public AppointmentDto updateAppointmentDate(@PathVariable Long appointmentId,
+                                                @RequestParam Optional<LocalDateTime> start,
+                                                @RequestParam Optional<LocalDateTime> end,
+                                                @RequestBody AppointmentDto appointmentDto) {
+        if (start.isPresent() && end.isPresent())
+            return AppointmentDto.fromEntity(this.appointmentService.updateAppointmentDate(appointmentId, start.get(), end.get()));
+        return AppointmentDto.fromEntity(this.appointmentService.updateAppointment(appointmentId, AppointmentDto.toEntity(appointmentDto)));
 
     }
 

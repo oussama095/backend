@@ -14,7 +14,7 @@ public interface AppointmentService {
 
     Appointment addNewAppointment(Appointment newAppointment, Long patientId);
 
-    Appointment updateAppointment(Appointment appointment);
+    Appointment updateAppointment(Long appointmentId, Appointment appointment);
 
     Appointment updateAppointmentDate(Long appointmentId, LocalDateTime start, LocalDateTime end);
 

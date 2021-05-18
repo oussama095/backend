@@ -23,6 +23,8 @@ public class Transcription extends AbstractEntity {
     @OneToMany(mappedBy = "transcription", cascade = CascadeType.REMOVE)
     private List<Medication> medications;
 
+    private String name;
+
     private String note;
 
 }

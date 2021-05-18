@@ -11,9 +11,6 @@ import java.util.ArrayList;
 
 @Configuration
 public class LoadDatabase {
-    // private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
-
-
     int maxNumber = 5;
 
     @Bean
@@ -39,13 +36,14 @@ public class LoadDatabase {
         for (var i = 0; i < this.maxNumber; i++) {
             for (var j = 0; j < this.maxNumber; j++) {
                 var appointment = new Appointment();
-                appointment.setTitle("Title " + j);
-                appointment.setDescription("description " + j);
+                appointment.setTitle("Regular Appointment: " + j);
+                appointment.setDescription("My organ " + j + " hurts");
                 appointment.setStart(date.plusDays(j));
                 appointment.setEnd(date.plusDays(j).plusHours(1));
                 appointment.setPatient(patients.get(i));
                 appointmentRepository.save(appointment);
             }
+            date = date.plusHours(1);
         }
 
     }
@@ -56,6 +54,7 @@ public class LoadDatabase {
         for (var i = 0; i < this.maxNumber; i++) {
             for (var j = 0; j < this.maxNumber; j++) {
                 var transcription = new Transcription();
+                transcription.setName("Transcription Name " + j);
                 transcription.setNote("note " + j);
                 transcription.setPatient(patients.get(i));
                 transcriptionRepository.save(transcription);
@@ -72,7 +71,7 @@ public class LoadDatabase {
                 var dose = new Dose();
                 dose.setQuantity(i + 1);
                 dose.setFullPeriod(i + 2 + "months");
-                dose.setPeriod(i + 1 + "Day");
+                dose.setPeriod("Day");
                 var medication = new Medication();
                 medication.setName("Medication " + j);
                 medication.setRoute("Route " + j);

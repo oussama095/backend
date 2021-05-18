@@ -37,6 +37,11 @@ public class TranscriptionServiceImp implements TranscriptionService {
     }
 
     @Override
+    public Transcription getTranscription(Long transcriptionId) {
+        return transcriptionRepository.findById(transcriptionId).orElse(null);
+    }
+
+    @Override
     public Medication addMedicationToTranscription(Long transcriptionId, Medication medication) {
         var oldTranscription = transcriptionRepository.findById(transcriptionId).orElse(null);
         if (oldTranscription != null) {

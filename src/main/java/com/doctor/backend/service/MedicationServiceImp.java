@@ -21,6 +21,11 @@ public class MedicationServiceImp implements MedicationService {
     }
 
     @Override
+    public Medication getMedicationById(Long medicationId) {
+        return medicationRepository.findById(medicationId).orElse(null);
+    }
+
+    @Override
     public Medication updateMedication(Medication medication) {
         var oldMedication = medicationRepository.findById(medication.getId()).orElse(null);
         if (oldMedication != null) {
