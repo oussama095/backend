@@ -10,6 +10,12 @@ spring:
     password:
 
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: create-drop
+springdoc:
+  swagger-ui:
+    path: "/docs"
+  api-docs:
+    enabled: true
+    path: "/swagger-ui/doctor-api"
