@@ -18,4 +18,5 @@ public interface TranscriptionService {
     List<Medication> getMedicationByTranscription(Long transcriptionId);
 
 
+
 }
