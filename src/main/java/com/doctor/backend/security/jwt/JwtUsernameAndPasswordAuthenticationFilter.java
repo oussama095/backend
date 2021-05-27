@@ -72,5 +72,4 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         UserDetailsImp user = (UserDetailsImp) authResult.getPrincipal();
         response.addHeader("patientId", user.getPatientId().toString());
     }
-
 }

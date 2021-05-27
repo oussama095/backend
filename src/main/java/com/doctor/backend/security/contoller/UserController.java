@@ -8,7 +8,6 @@ import com.doctor.backend.security.model.User;
 import com.doctor.backend.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,14 +26,8 @@ public class UserController {
         this.userService = userService;
 
     }
-    @PostMapping("")
-    @CrossOrigin(origins = "*", maxAge = 3600,
-            allowedHeaders={"x-auth-token", "x-requested-with", "x-xsrf-token"})
-    public String login(@RequestBody RegisterRequest request) {
-        return "login";
-    }
 
-        @PostMapping("register")
+    @PostMapping("register")
     public void register(@RequestBody RegisterRequest request) {
         var role = new ArrayList<Role>();
         role.add(new Role(ERole.PATIENT));
