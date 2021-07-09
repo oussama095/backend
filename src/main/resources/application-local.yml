@@ -1,13 +1,13 @@
 #Default server port
 server:
-  port: 8080
+  port: 8081
 
 spring:
   #MySQL
   datasource:
-    url: "jdbc:mysql://database-doctor.cidwb5y1ggn5.us-east-2.rds.amazonaws.com:3306/doctor?useSSL=true&allowPublicKeyRetrieval=true"
-    username: admin
-    password: QE8Ty1Fj03IHnyEhFcqP
+    url: "jdbc:mysql://localhost:3306/doctor?useSSL=false&allowPublicKeyRetrieval=true"
+    username: root
+    password:
 
   jpa:
     show-sql: true
