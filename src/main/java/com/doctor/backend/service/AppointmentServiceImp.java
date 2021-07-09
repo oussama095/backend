@@ -24,9 +24,7 @@ public class AppointmentServiceImp implements AppointmentService {
 
     @Override
     public List<Appointment> getAll() {
-        List<Appointment> appointments = new ArrayList<>();
-        appointmentRepository.findAll().forEach(appointments::add);
-        return appointments;
+        return new ArrayList<>(appointmentRepository.findAll());
     }
 
     @Override
