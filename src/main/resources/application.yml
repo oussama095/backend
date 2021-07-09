@@ -5,7 +5,7 @@ server:
 spring:
   #MySQL
   datasource:
-    url: "jdbc:mysql://database-doctor.cidwb5y1ggn5.us-east-2.rds.amazonaws.com:3306/doctor?useSSL=true&allowPublicKeyRetrieval=true"
+    url: "jdbc:mysql://database-doctor.cidwb5y1ggn5.us-east-2.rds.amazonaws.com:3306/doctor?useSSL=false&allowPublicKeyRetrieval=true"
     username: admin
     password: QE8Ty1Fj03IHnyEhFcqP
 
