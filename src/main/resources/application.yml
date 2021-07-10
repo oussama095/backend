@@ -1,6 +1,6 @@
-#Default server port
-server:
-  port: 8080
+##Default server port
+#server:
+#  port: 8080
 
 spring:
   #MySQL
@@ -13,9 +13,4 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
-springdoc:
-  swagger-ui:
-    path: "/docs"
-  api-docs:
-    enabled: true
-    path: "/swagger-ui/doctor-api"
+
